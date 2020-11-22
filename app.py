@@ -4,8 +4,8 @@ import mysql.connector
 mydb = mysql.connector.connect(
     host='localhost',
     user='root',
-    passwd='********',
-    database='data_satu'
+    passwd='Holy_8448', #ubah ke password kalian ya
+    database='pt_presisi'
 )
 
 
@@ -25,10 +25,10 @@ def allpegawai(message):
     print(texts)
 
     #input utk SQL
-    sql.execute("SELECT nama, id, proyek FROM pekerja")    
+    sql.execute("SELECT nama, id_telegram, divisi FROM pekerja")    
     result_sql = sql.fetchall()
     
-    response_message = 'Nama    id    proyek\n'
+    response_message = 'Nama  id                            divisi\n'
     for x in result_sql:
         response_message = response_message + str(x) + '\n'
         
@@ -41,32 +41,38 @@ def allpegawai(message):
     # bot.reply_to(message, 'Hi, apa kabar {} {}?'.format(first_name, last_name))
     # print(message)
 
+@bot.message_handler(commands=['allProyek'])
+def allProyek(message):
+    response_message = 'Ini fungsi {}'.format(message.text)
+    bot.reply_to(message, response_message)
+
+@bot.message_handler(commands=['addPegawai'])
+def addPegawai(message):
+    response_message = 'Ini fungsi {}'.format(message.text)
+    bot.reply_to(message, response_message)
+
 @bot.message_handler(commands=['addProyek'])
 def addProyek(message):
     texts = message.text.split(' ')
-    idproyek = texts[1]
+    id_proyek = texts[1]
     namaproyek = texts[2]
-    klienproyek = texts[3]
-    keterangan = texts[4]
+    deadline = texts[3]
+    deskripsi = texts[4]
 
-    insert = "INSERT INTO proyek(id, nama_proyek, klien, keterangan) VALUES (%s, %s, %s, %s)"
-    val = (idproyek, namaproyek, klienproyek, keterangan)
+    insert = "INSERT INTO proyek(ID_proyek, namaProyek, deadline, deskripsi) VALUES (%s, %s, %s, %s)"
+    val = (id_proyek, namaproyek, deadline, deskripsi)
     sql.execute(insert, val)
     mydb.commit()
 
 
     bot.reply_to(message, 'Sudah tersimpan ' + namaproyek)
 
-@bot.message_handler(commands=['id'])
-def action_id(message):
-    first_name = message.chat.first_name
-    last_name = message.chat.last_name
-    id_telegram = message.chat.id
-    bot.reply_to(message, '''
-Hai, ini ID Telegram kamu
-Nama = {} {} 
-ID = {}
-        '''.format(first_name,last_name, id_telegram))
+@bot.message_handler(commands=['addProgress'])
+def addProgress(message):
+    response_message = 'Ini fungsi {}'.format(message.text)
+    bot.reply_to(message, response_message)
+
+
 
 @bot.message_handler(commands=['remindMe'])
 def remindMe(message):
@@ -84,22 +90,37 @@ Hai {} {} ! Ini deadlinemu:
 
         '''.format(first_name,last_name) + result)
             
+@bot.message_handler(commands=['remindAll'])
+def remindAll(message):
+    response_message = 'Ini fungsi {}'.format(message.text)
+    bot.reply_to(message, response_message)
+
+@bot.message_handler(commands=['progressPegawai'])
+def progressPegawai(message):
+    response_message = 'Ini fungsi {}'.format(message.text)
+    bot.reply_to(message, response_message)
+
+@bot.message_handler(commands=['progressProyek'])
+def progressProyek(message):
+    response_message = 'Ini fungsi {}'.format(message.text)
+    bot.reply_to(message, response_message)
 
 #tar kasi command help buat user
-
+@bot.message_handler(commands=['help'])
+def help(message):
+    response_message = 'Ini fungsi {}'.format(message.text)
+    bot.reply_to(message, response_message)
 
 
 #command Help *jangan dihapus
-@bot.message_handler(commands=['helpAdmin'])
+@bot.message_handler(commands=['helpAdmin']) #khusus admin, kalau buat user /help tapi terbatas fungsinya
 def action_helpAdmin(message):
     first_name = message.chat.first_name
     last_name = message.chat.last_name
     bot.reply_to(message, '''
 Hi {} {}, ini list command:
 /allPegawai -> Melihat seluruh pegawai
-/allProyek -> Melihat seluruh proyek (status masih berjalan)
-/allProyekAll -> Melihat seluruh proyek 
-/allTeam -> Melihat seluruh team
+/allProyek -> Melihat seluruh proyek (status masih berjalan) 
 /addPegawai [id-telegram] [nama-pegawai] [jabatan] ->
 /addProyek [id-proyek] [nama-proyek] -> 
 /addProgress [nama-pegawai] [id-proyek] [catatan-progress]  -> 
@@ -110,6 +131,21 @@ Hi {} {}, ini list command:
 /progressProyek -> 
 /help -> List Command Bot utk User
 '''.format(first_name,last_name))
+
+### FUNGSI TAMBAHAN
+@bot.message_handler(commands=['id']) #buat tau kita id-telegramnya apa
+def action_id(message):
+    first_name = message.chat.first_name
+    last_name = message.chat.last_name
+    id_telegram = message.chat.id
+    bot.reply_to(message, '''
+Hai, ini ID Telegram kamu
+Nama = {} {} 
+ID = {}
+        '''.format(first_name,last_name, id_telegram))
+
+
+
 
 print('bot start running')
 
