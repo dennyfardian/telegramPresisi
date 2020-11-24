@@ -127,8 +127,8 @@ Hi {} {}, ini list command:
 /remindMe -> Memberikan reminder proyek kepada user terkait berdasarkan ID-telegram
 /remindProyek [nama-proyek] -> Memberikan reminder proyek tertentu ke dalam grup
 /remindAll -> Mengirimkan reminder 
-/progressPegawai [] -> 
-/progressProyek -> 
+/progressPegawai [nama-pegawai] [id-proyek] [nama-proyek] [waktu-progress] [progress]-> Menampilkan progres  pegawai dalam mengerjakan proyek`
+/progressProyek [id-proyek] [nama-proyek] [progress] [deadline]-> Menampilkan progres proyek yang dikerjakan
 /help -> List Command Bot utk User
 '''.format(first_name,last_name))
 
