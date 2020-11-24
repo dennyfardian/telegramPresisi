@@ -1,5 +1,6 @@
 import telebot
 import mysql.connector
+import requests
 
 mydb = mysql.connector.connect(
     host='localhost',
@@ -48,7 +49,18 @@ def allProyek(message):
 
 @bot.message_handler(commands=['addPegawai'])
 def addPegawai(message):
-    response_message = 'Ini fungsi {}'.format(message.text)
+    texts = message.text.split(' ')
+    id_telegram = texts[1]
+    nama = texts[2]
+    jabatan = texts[3]
+
+    # input ke sql
+    insert = "INSERT INTO pekerja (id_telegram, nama, divisi) VALUES (%s,%s,%s)"
+    val = (id_telegram, nama, jabatan)
+    sql.execute(insert,val)
+    mydb.commit()
+
+    response_message = '{} sudah terdaftar'.format(nama)
     bot.reply_to(message, response_message)
 
 @bot.message_handler(commands=['addProyek'])
