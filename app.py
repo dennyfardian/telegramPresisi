@@ -153,7 +153,19 @@ def progressPegawai(message):
 
 @bot.message_handler(commands=['progressProyek'])
 def progressProyek(message):
-    response_message = 'Ini fungsi {}'.format(message.text)
+    #split message
+    texts_pp = message.text.split(' ')
+    print(texts_pp)
+
+    #input utk SQL
+    sql.execute("SELECT * FROM progress")    
+    result_sql = sql.fetchall()
+    
+    response_message = '(id_proyek) (nama) (nama_proyek) (progress) (waktu_progress)\n'
+    for x in result_sql:
+        response_message = response_message + str(x) + '\n'
+        
+    response_message = response_message.replace("(", "").replace(",", "").replace(")", "").replace("'", "")
     bot.reply_to(message, response_message)
 
 #tar kasi command help buat user
