@@ -4,7 +4,7 @@ import mysql.connector
 mydb = mysql.connector.connect(
     host='localhost',
     user='root',
-    passwd='Holy_8448', #ubah ke password kalian ya
+    passwd='********', #ubah ke password kalian ya
     database='pt_presisi'
 )
 
