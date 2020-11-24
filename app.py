@@ -4,7 +4,7 @@ import mysql.connector
 mydb = mysql.connector.connect(
     host='localhost',
     user='root',
-    passwd='********', #ubah ke password kalian ya
+    passwd='Holy_8448', #ubah ke password kalian ya
     database='pt_presisi'
 )
 
@@ -28,7 +28,7 @@ def allpegawai(message):
     sql.execute("SELECT nama, id_telegram, divisi FROM pekerja")    
     result_sql = sql.fetchall()
     
-    response_message = 'Nama  id                            divisi\n'
+    response_message = 'Nama  id                      divisi\n'
     for x in result_sql:
         response_message = response_message + str(x) + '\n'
         
@@ -62,7 +62,7 @@ def addProyek(message):
     insert = "INSERT INTO proyek(ID_proyek, namaProyek, deadline, deskripsi) VALUES (%s, %s, %s, %s)"
     val = (id_proyek, namaproyek, deadline, deskripsi)
     sql.execute(insert, val)
-    mydb.commit()
+    mydb.commit() #kalau ada modifikasi basis data harus pake commit
 
 
     bot.reply_to(message, 'Sudah tersimpan ' + namaproyek)
@@ -79,16 +79,32 @@ def remindMe(message):
     first_name = message.chat.first_name
     last_name = message.chat.last_name
     id_telegram = message.chat.id
-
-    #query sql
     
+    id_telegram_str = str(id_telegram)
+    
+    #query sql
+    query_sql = "SELECT id_proyek, namaProyek, deadline FROM bekerja WHERE bekerja.nama = (SELECT nama FROM pegawai WHERE pegawai.id_telegram = %s )"    
+    val = id_telegram_str
+    sql.execute(query_sql, val)
+    result_sql = sql.fetchall()
+    print(result_sql)
 
     #result query sql
+#     response_message = '''
+# Hai {} {} ! Ini deadlinemu:   
+# IDProyek  Nama Proyek                      Deadline\n'
+#     '''
 
-    bot.reply_to(message, '''
-Hai {} {} ! Ini deadlinemu:
+#     for x in result_sql:
+#         response_message = response_message + str(x) + '\n'
+        
+#     response_message = response_message.replace("(", "").replace(",", "").replace(")", "").replace("'", "")
+#     bot.reply_to(message, response_message)
 
-        '''.format(first_name,last_name) + result)
+#     bot.reply_to(message, '''
+# Hai {} {} ! Ini deadlinemu:
+
+#         '''.format(first_name,last_name) + result)
             
 @bot.message_handler(commands=['remindAll'])
 def remindAll(message):
