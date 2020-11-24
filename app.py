@@ -44,7 +44,19 @@ def allpegawai(message):
 
 @bot.message_handler(commands=['allProyek'])
 def allProyek(message):
-    response_message = 'Ini fungsi {}'.format(message.text)
+    #split message
+    texts_p = message.text.split(' ')
+    print(texts_p)
+
+    #input utk SQL
+    sql.execute("SELECT * FROM proyek")    
+    result_sql = sql.fetchall()
+    
+    response_message = '(id_proyek) (nama_proyek) (deskripsi) (startdate) (deadline) (jenis proyek)\n'
+    for x in result_sql:
+        response_message = response_message + str(x) + '\n'
+        
+    response_message = response_message.replace("(", "").replace(",", "").replace(")", "").replace("'", "")
     bot.reply_to(message, response_message)
 
 @bot.message_handler(commands=['addPegawai'])
