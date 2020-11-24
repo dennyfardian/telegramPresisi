@@ -1,5 +1,6 @@
 import telebot
 import mysql.connector
+import requests
 
 mydb = mysql.connector.connect(
     host='localhost',
@@ -48,7 +49,18 @@ def allProyek(message):
 
 @bot.message_handler(commands=['addPegawai'])
 def addPegawai(message):
-    response_message = 'Ini fungsi {}'.format(message.text)
+    texts = message.text.split(' ')
+    id_telegram = texts[1]
+    nama = texts[2]
+    jabatan = texts[3]
+
+    # input ke sql
+    insert = "INSERT INTO pekerja (id_telegram, nama, divisi) VALUES (%s,%s,%s)"
+    val = (id_telegram, nama, jabatan)
+    sql.execute(insert,val)
+    mydb.commit()
+
+    response_message = '{} sudah terdaftar'.format(nama)
     bot.reply_to(message, response_message)
 
 @bot.message_handler(commands=['addProyek'])
@@ -108,8 +120,19 @@ def remindMe(message):
             
 @bot.message_handler(commands=['remindAll'])
 def remindAll(message):
-    response_message = 'Ini fungsi {}'.format(message.text)
-    bot.reply_to(message, response_message)
+    sql.execute("SELECT * FROM bekerja")
+    hasil_sql = sql.fetchall()
+
+    for data in hasil_sql:
+        sql.execute("SELECT * FROM pekerja WHERE nama='{}'".format(data[1]))
+        hasil_sql1 = sql.fetchall()
+        for data1 in hasil_sql1:
+            bot_chatID = data1[0]
+            bot_text = 'Jangan lupa mengerjakan: ' + data[2]
+            send_text = 'https://api.telegram.org/bot' + api + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=HTML&text=' + bot_text
+            response = requests.get(send_text)
+    
+    return response.json()
 
 @bot.message_handler(commands=['progressPegawai'])
 def progressPegawai(message):
